@@ -3,7 +3,7 @@ import ShelfChanger from './ShelfChanger'
 
 class Book extends Component {
     state = {
-        readStatus: ''
+        shelf: ''
     };
 
     render() {
