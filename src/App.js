@@ -2,6 +2,7 @@ import React from 'react'
 // import * as BooksAPI from './BooksAPI'
 import './App.css'
 import './BookShelf'
+import Header from './Header'
 import BookShelf from "./BookShelf";
 
 class BooksApp extends React.Component {
@@ -82,9 +83,9 @@ class BooksApp extends React.Component {
                     </div>
                 ) : (
                     <div className="list-books">
-                        <div className="list-books-title">
-                            <h1>MyReads</h1>
-                        </div>
+                        {/*Header Component*/}
+                        <Header/>
+
                         <div className="list-books-content">
                             <div>
                                 <BookShelf shelfName={'Currently Reading'} bookList={this.currentlyReading} />
