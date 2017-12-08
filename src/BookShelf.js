@@ -12,7 +12,11 @@ const BookShelf = (props) => (
                     {/*Get List of books from props iterate and list*/}
                     {props.bookList.map(book =>
                         <li key={book.title}>
-                            <Book book={book} />
+                            <Book
+                                book={book}
+                                authors={book.authors}
+                                image={book.imagesLinks}
+                            />
                         </li>
                     )}
                 </ol>
