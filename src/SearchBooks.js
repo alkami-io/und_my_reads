@@ -1,20 +1,36 @@
 import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 import Book from './Book'
+import PropTypes from 'prop-types'
+import escapeRegExp from 'escape-string-regexp'
+import sortBy from 'sort-by'
 
 class SearchBooks extends Component {
-    // state = {
-    //     books: []
-    // };
-    //
-    // componentDidMount() {
-    //     BooksAPI.getAll().then((books) => {
-    //         this.setState({ books })
-    //     })
-    // }
+    state = {
+        query: ''
+    };
 
+    updateQuery = (query) => (
+        this.setState({query: query.trim() })
+    );
 
     render() {
+        const { allBooks } = this.props;
+        const { query } = this.state;
+
+        let showingBooks;
+
+        if(query) {
+            const match = new RegExp(escapeRegExp(query), 'i');
+            showingBooks = this.props.allBooks.filter((book) => match.test(book.title));
+        } else {
+            showingBooks = allBooks
+        };
+
+        // showingBooks = allBooks;
+
+        showingBooks.sort(sortBy('title'));
+
         return (
             <div>
                 <div className="search-books">
@@ -29,13 +45,18 @@ class SearchBooks extends Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                            <input type="text" placeholder="Search by title or author"/>
+                            <input
+                                type="text"
+                                placeholder="Search by title or author"
+                                value={query}
+                                onChange={(event) => this.updateQuery(event.target.value)}
+                            />
 
                         </div>
                     </div>
                     <div className="search-books-results">
                         <ol className="books-grid">
-                            { this.props.allBooks.map(book =>
+                            { showingBooks.map(book =>
                                 <li key={book.title}>
                                     <Book book={book} />
                                 </li>
