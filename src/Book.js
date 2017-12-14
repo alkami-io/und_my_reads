@@ -3,8 +3,17 @@ import ShelfChanger from './ShelfChanger'
 
 class Book extends Component {
     state = {
-        shelf: ''
+        shelf: '',
     };
+
+    handleChangeValue = (e) => (
+        // Change State to Shelf Selected
+        this.setState({shelf: e.target.value})
+
+        // Update Book to hold assigned Shelf
+
+
+    );
 
     render() {
         return (
@@ -20,12 +29,14 @@ class Book extends Component {
                         </div>
 
                         {/*Shelf Changer Component for each book*/}
-                        <ShelfChanger/>
+                        <ShelfChanger
+                            shelf={this.state.shelf}
+                            onChangeValue={this.handleChangeValue}
+                        />
                     </div>
                     <div className="book-title">{this.props.book.title}</div>
                     <div className="book-authors">{this.props.book.authors[0]}</div>
                 </div>
-
             </div>
         )
     }
