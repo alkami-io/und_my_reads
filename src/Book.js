@@ -1,19 +1,44 @@
 import React, { Component } from 'react'
 import ShelfChanger from './ShelfChanger'
+import * as BooksAPI from './BooksAPI'
 
 class Book extends Component {
+    constructor(){
+        super ();
+        this.setShelf = this.setShelf.bind(this);
+        this.findBook = this.findBook.bind(this);
+        this.updateBook = this.updateBook.bind(this);
+        this.handleChangeValue = this.handleChangeValue.bind(this);
+    }
+
     state = {
         shelf: '',
     };
 
-    handleChangeValue = (e) => (
+    setShelf = (e) => (
         // Change State to Shelf Selected
         this.setState({shelf: e.target.value})
-
-        // Update Book to hold assigned Shelf
-
-
     );
+
+    findBook = () => (
+        BooksAPI.get(this.props.book.id).then(book => {
+            let selectedBook = book
+        })
+    );
+
+    updateBook = (book, shelf) => (
+        BooksAPI.update(book, shelf).then(book => {
+            console.log('Book updated: ' + this.props.book.shelf);
+            console.log('Shelf:' + this.state.shelf);
+            }
+        )
+    );
+
+    handleChangeValue = (e) => {
+        this.setShelf(e);
+        console.log(this.findBook());
+        this.updateBook(this.props.book, this.state.shelf);
+    };
 
     render() {
         return (
