@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import PropTypes from 'prop-types'
 import './App.css'
 import './BookShelf'
 import Header from './Header'
@@ -10,27 +11,6 @@ import SearchBooks from "./SearchBooks"
 
 class BooksApp extends React.Component {
     // Mock for Currently Reading Array
-    currentlyReading = [
-        {
-            title: 'To Kill a Mockingbird',
-            authors: [
-                'Harper Lee'
-            ],
-            imageLinks: {
-                thumbnail: "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-            }
-        },
-        {
-            title: 'Enders Game',
-            authors: [
-                'Orson Scott Card'
-            ],
-            imageLinks: {
-                thumbnail: "http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api"
-            }
-        }
-    ];
-
     wantToRead = [
         {
             title:'1776',
@@ -79,19 +59,36 @@ class BooksApp extends React.Component {
         allBooks: []
     };
 
+    static propTypes = {
+        booklists: PropTypes.array.isRequired
+    }
+
     // componentDidMount() {
     //     BooksAPI.getAll().then((books) => {
     //         this.props.books = books;
     // };
 
     componentDidMount() {
-        BooksAPI.getAll().then((allBooks) => {
-            this.setState({ allBooks })
+        BooksAPI.getAll().then((books) => {
+            this.setState({ allBooks: books })
         })
     };
 
+    currentlyReading = BooksAPI.getAll().then((books) => {
+        this.setState({allBooks: books})
+    });
 
     render() {
+        // Currently Reading Books Filter
+        let currentlyReadingBooks = this.state.allBooks.filter((b) => b.shelf === 'currentlyReading');
+
+        // Want to Read Books Filter
+        let wantToReadBooks = this.state.allBooks.filter((b) => b.shelf === 'wantToRead');
+
+        // Read Books Filter
+        let readBooks = this.state.allBooks.filter((b) => b.shelf === 'read');
+
+
         return (
             <div className="app">
                 <Route path='/search' render={() => (
@@ -105,9 +102,9 @@ class BooksApp extends React.Component {
 
                         <div className="list-books-content">
                             <div>
-                                <BookShelf shelfName={'Currently Reading'} bookList={this.currentlyReading} />
-                                <BookShelf shelfName={'Want to Read'} bookList={this.wantToRead} />
-                                <BookShelf shelfName={'Read'} bookList={this.read} />
+                                <BookShelf shelfName={'Currently Reading'} bookList={currentlyReadingBooks} />
+                                <BookShelf shelfName={'Want to Read'} bookList={wantToReadBooks} />
+                                <BookShelf shelfName={'Read'} bookList={readBooks} />
                             </div>
                         </div>
 
