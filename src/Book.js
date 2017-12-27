@@ -3,7 +3,7 @@ import ShelfChanger from './ShelfChanger'
 import * as BooksAPI from './BooksAPI'
 
 class Book extends Component {
-    constructor(props){
+    constructor(props) {
         super ();
         this.state.shelf = props.book.shelf;
         this.setShelf = this.setShelf.bind(this);
@@ -30,10 +30,12 @@ class Book extends Component {
 
     findBook = () => (
         BooksAPI.get(this.props.book.id).then(book => {
-            console.log('Book Found!')
-            console.log('Book ID:' + book.id)
-            console.log('Book Details:' + book.id)
-            console.log('State: ' + this.state.shelf)
+            console.log('Book Found!');
+            console.log('Book ID:' + book.id);
+            console.log('Book Details:' + book.id);
+            console.log('State: ' + this.state.shelf);
+
+            // Update Book: Probably not the best place for this
             this.updateBook(book, this.state.shelf)
         })
     );
@@ -58,7 +60,7 @@ class Book extends Component {
 
                         {/*Shelf Changer Component for each book*/}
                         <ShelfChanger
-                            // shelf={this.state.shelf}
+                            shelf={this.state.shelf}
                             onChangeValue={this.handleChangeValue}
                         />
                     </div>
