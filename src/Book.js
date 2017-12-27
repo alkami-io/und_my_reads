@@ -5,6 +5,7 @@ import * as BooksAPI from './BooksAPI'
 class Book extends Component {
     constructor(props){
         super ();
+        this.state.shelf = props.book.shelf;
         this.setShelf = this.setShelf.bind(this);
         this.findBook = this.findBook.bind(this);
         this.updateBook = this.updateBook.bind(this);
@@ -12,37 +13,34 @@ class Book extends Component {
     }
 
     state = {
-        shelf: 'none',
     };
 
     setShelf = (e) => {
         // Change State to Shelf Selected
         this.setState({shelf: e.target.value});
-        this.updateBook(this.props.book, e.target.value);
+        // this.updateBook(this.props.book, e.target.value);
     };
+
+    updateBook = (book, shelf) => (
+        BooksAPI.update(book, shelf).then(book => {
+                book.shelf = shelf;
+            }
+        )
+    );
 
     findBook = () => (
         BooksAPI.get(this.props.book.id).then(book => {
             console.log('Book Found!')
             console.log('Book ID:' + book.id)
             console.log('Book Details:' + book.id)
+            console.log('State: ' + this.state.shelf)
+            this.updateBook(book, this.state.shelf)
         })
-    );
-
-    updateBook = (book, shelf) => (
-        BooksAPI.update(book, shelf).then(book => {
-            book.shelf = shelf;
-            console.log('CurrentShelf: ' + this.props.book.shelf);
-            console.log('AssignedShelf:' + this.state.shelf);
-            console.log('State:' + this.state.shelf)
-            }
-        )
     );
 
     handleChangeValue = (e) => {
         this.setShelf(e);
-        console.log(this.findBook());
-
+        this.findBook();
     };
 
     render() {
@@ -60,7 +58,7 @@ class Book extends Component {
 
                         {/*Shelf Changer Component for each book*/}
                         <ShelfChanger
-                            shelf={this.state.shelf}
+                            // shelf={this.state.shelf}
                             onChangeValue={this.handleChangeValue}
                         />
                     </div>
