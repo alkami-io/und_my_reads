@@ -10,7 +10,7 @@ const BookShelf = (props) => (
                 <ol className="books-grid">
 
                     {/*Get List of books from props iterate and list*/}
-                    {props.bookList.map(book =>
+                    { props.bookList.map(book =>
                         <li key={book.title}>
                             <Book
                                 book={book}
