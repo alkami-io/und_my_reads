@@ -1,31 +1,52 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
-import * as BooksAPI from './BooksAPI'
-// import PropTypes from 'prop-types'
 import './App.css'
 import './BookShelf'
+import * as BooksAPI from './BooksAPI'
 import Header from './Header'
 import BookShelf from "./BookShelf"
 import SearchBooks from "./SearchBooks"
 
-class BooksApp extends React.Component {
+class BooksApp extends Component {
     state = {
-        allBooks: [],
-        currentlyReadingBooks: [],
+        currentlyReadingList: [],
+        wantToReadList: [],
+        readList: []
+    };
+
+    // Get CurrentlyReadingList from BooksAPI
+    getCurrentlyReadingList = () => {
+        BooksAPI.getAll().then((books) => {
+            this.setState({currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading')})
+        })
+    };
+
+    // Get WantToReadList from BooksAPI
+    getWantToReadList = () => {
+      BooksAPI.getAll().then((books) => {
+          this.setState({wantToReadList: books.filter((b) => b.shelf === 'wantToRead')})
+      })
+    };
+
+    // Get ReadList from BooksAPI
+    getReadList = () => {
+        BooksAPI.getAll().then((books) => {
+            this.setState({readList: books.filter((b) => b.shelf === 'read')})
+        })
     };
 
     componentDidMount() {
-        BooksAPI.getAll().then((books) => {
-            this.setState({ allBooks: books })
-        })
-    };
+        this.getCurrentlyReadingList();
+        this.getWantToReadList();
+        this.getReadList();
+    }
 
     render() {
         return (
             <div className="app">
                 <Route path='/search' render={() => (
-                    <SearchBooks allBooks={this.state.allBooks}/>
+                    <SearchBooks allBooks={[]}/>
                 )}/>
 
                 <Route path='/' exact render={() => (
@@ -33,29 +54,43 @@ class BooksApp extends React.Component {
                         {/*Header Component*/}
                         <Header/>
 
+                        {/*Book Shelf Components*/}
                         <div className="list-books-content">
                             <div>
+                                {/*Currently Reading Bookshelf*/}
                                 <BookShelf
-                                    shelfName={'Currently Reading'}
-                                    shelf={'currentlyReading'}
+                                    // shelfLabel Prop just used for labeling of BookShelf components
+                                    shelfLabel={'Currently Reading'}
+                                    // shelfName is used for filtering of Books withing the BookShelf Component
+                                    shelfName={'currentlyReading'}
+                                    // bookList is the list of books on a given shelf from the app state
+                                    bookList={this.state.currentlyReadingList}
                                 />
+
+                                {/*Want to Read Book Shelf*/}
                                 <BookShelf
-                                    shelfName={'Want to Read'}
-                                    shelf={'wantToRead'}
+                                    shelfLabel={'Want to Read'}
+                                    shelfName={'wantToRead'}
+                                    bookList={this.state.wantToReadList}
                                 />
+
+                                {/*Read Bookshelf*/}
                                 <BookShelf
-                                    shelfName={'Read'}
-                                    shelf={'read'}
+                                    shelfLabel={'Read'}
+                                    shelfName={'read'}
+                                    bookList={this.state.readList}
                                 />
 
                             </div>
                         </div>
 
 
+                        {/*Search Page Component*/}
                         <div className="open-search">
                             <Link
                                 to='/search'
-                                className='open-search'>Add a Book</Link>
+                                className='open-search'>Add a Book
+                            </Link>
                         </div>
                     </div>
                 )}/>

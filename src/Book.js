@@ -6,43 +6,50 @@ class Book extends Component {
     constructor(props) {
         super ();
         this.state.shelf = props.book.shelf;
-        this.setShelf = this.setShelf.bind(this);
+        // this.setShelf = this.setShelf.bind(this);
         this.findBook = this.findBook.bind(this);
         this.updateBook = this.updateBook.bind(this);
         this.handleChangeValue = this.handleChangeValue.bind(this);
     }
 
     state = {
+        shelf: ''
     };
 
-    setShelf = (e) => {
-        // Change State to Shelf Selected
-        this.setState({shelf: e.target.value});
-        // this.updateBook(this.props.book, e.target.value);
-    };
+    // Not currently using this once I passed the event into the findBook function.  Hold in case need it during refactor
+    // setShelf = (shelf) => {
+    //     // Change State to Shelf Selected
+    //     this.setState({shelf: shelf});
+    // };
 
-    updateBook = (book, shelf) => (
+    // Update Book Call to API
+    updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf).then(book => {
                 book.shelf = shelf;
             }
-        )
-    );
+        );
+    };
 
-    findBook = () => (
+    // Find Book Call to API
+    // TODO Refactor this?? Previously had separate function for just setting shelf but elected to pass event into this function, hold as variable and then Find book and call Update (separate function)  Not horrible but could refactor.
+    findBook = (e) => {
+        let selectedShelf = e.target.value
         BooksAPI.get(this.props.book.id).then(book => {
+            // TODO Remove Console Logs once debugging complete
             console.log('Book Found!');
             console.log('Book ID:' + book.id);
             console.log('Book Details:' + book.id);
             console.log('State: ' + this.state.shelf);
 
-            // Update Book: Probably not the best place for this
-            this.updateBook(book, this.state.shelf)
+            // Update Book after it is found: Probably not the best place for this
+            console.log(selectedShelf)
+            this.updateBook(book, selectedShelf)
         })
-    );
+        this.setState({shelf: selectedShelf})
+    };
 
     handleChangeValue = (e) => {
-        this.setShelf(e);
-        this.findBook();
+        this.findBook(e);
     };
 
     render() {
