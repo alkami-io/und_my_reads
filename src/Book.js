@@ -3,25 +3,6 @@ import ShelfChanger from './ShelfChanger'
 import * as BooksAPI from './BooksAPI'
 
 class Book extends Component {
-    constructor(props) {
-        super ();
-        this.state.shelf = props.book.shelf;
-        // this.setShelf = this.setShelf.bind(this);
-        this.findBook = this.findBook.bind(this);
-        this.updateBook = this.updateBook.bind(this);
-        this.handleChangeValue = this.handleChangeValue.bind(this);
-    }
-
-    state = {
-        shelf: ''
-    };
-
-    // Not currently using this once I passed the event into the findBook function.  Hold in case need it during refactor
-    // setShelf = (shelf) => {
-    //     // Change State to Shelf Selected
-    //     this.setState({shelf: shelf});
-    // };
-
     // Update Book Call to API
     updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf).then(book => {
@@ -39,13 +20,12 @@ class Book extends Component {
             console.log('Book Found!');
             console.log('Book ID:' + book.id);
             console.log('Book Details:' + book.id);
-            console.log('State: ' + this.state.shelf);
+            console.log('State: ' + this.props.shelf);
 
             // Update Book after it is found: Probably not the best place for this
             console.log(selectedShelf)
             this.updateBook(book, selectedShelf)
         })
-        this.setState({shelf: selectedShelf})
     };
 
     handleChangeValue = (e) => {
@@ -67,7 +47,7 @@ class Book extends Component {
 
                         {/*Shelf Changer Component for each book*/}
                         <ShelfChanger
-                            shelf={this.state.shelf}
+                            shelf={this.props.shelf}
                             onChangeValue={this.handleChangeValue}
                         />
                     </div>

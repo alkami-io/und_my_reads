@@ -1,7 +1,24 @@
 import React, { Component } from 'react'
 import Book from './Book'
+import * as BooksAPI from './BooksAPI'
 
 class BookShelf extends Component {
+    state = {
+        bookList: []
+    };
+
+    constructor(props) {
+        super(props)
+
+        this.setState.bookList = this.props.bookList
+    }
+
+    updatedBookList = () => {
+        BooksAPI.getAll().then((books) => {
+            this.setState({bookList: books.filter((b) => b.shelf === this.props.shelfName)})
+        })
+    };
+
     render() {
         return (
             <div>
@@ -18,6 +35,8 @@ class BookShelf extends Component {
                                         book={book}
                                         authors={book.authors}
                                         image={book.imagesLinks}
+                                        shelf={book.shelf}
+                                        changeShelf={() => this.updatedBookList()}
                                     />
                                 </li>
                             )}
