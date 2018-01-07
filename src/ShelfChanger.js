@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 class ShelfChanger extends Component {
     constructor(props) {
         super();
-        // State is obtained from the props of the given book so that the selected value persists as the book moves fromn shelf to shelf
+        // State is obtained from the props of the given book so that the selected value persists as the book moves from shelf to shelf
         this.state.shelf = props.shelf
     }
 

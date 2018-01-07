@@ -1,23 +1,11 @@
 import React, { Component } from 'react'
 import Book from './Book'
-import * as BooksAPI from './BooksAPI'
 
 class BookShelf extends Component {
-    state = {
-        bookList: []
-    };
-
-    constructor(props) {
-        super(props)
-
-        this.setState.bookList = this.props.bookList
+    handleShelfChange = (e) => {
+        console.log('HandleShelfChange Fired!')
+        this.props.onShelfChange(e)
     }
-
-    updatedBookList = () => {
-        BooksAPI.getAll().then((books) => {
-            this.setState({bookList: books.filter((b) => b.shelf === this.props.shelfName)})
-        })
-    };
 
     render() {
         return (
@@ -36,7 +24,7 @@ class BookShelf extends Component {
                                         authors={book.authors}
                                         image={book.imagesLinks}
                                         shelf={book.shelf}
-                                        changeShelf={() => this.updatedBookList()}
+                                        changeShelf={(e) => this.handleShelfChange(e)}
                                     />
                                 </li>
                             )}

@@ -23,13 +23,14 @@ class Book extends Component {
             console.log('State: ' + this.props.shelf);
 
             // Update Book after it is found: Probably not the best place for this
-            console.log(selectedShelf)
+            console.log(selectedShelf);
             this.updateBook(book, selectedShelf)
         })
     };
 
     handleChangeValue = (e) => {
         this.findBook(e);
+        this.props.changeShelf(e);
     };
 
     render() {

@@ -10,39 +10,37 @@ import SearchBooks from "./SearchBooks"
 
 class BooksApp extends Component {
     state = {
-        currentlyReadingList: [],
-        wantToReadList: [],
-        readList: []
+        allBooks: []
     };
 
-    // Get CurrentlyReadingList from BooksAPI
-    getCurrentlyReadingList = () => {
-        BooksAPI.getAll().then((books) => {
-            this.setState({currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading')})
-        })
-    };
-
-    // Get WantToReadList from BooksAPI
-    getWantToReadList = () => {
+    // Get Allbooks from BooksAPI
+    getAllBooks = () => {
+        console.log('Getting all books.')
       BooksAPI.getAll().then((books) => {
-          this.setState({wantToReadList: books.filter((b) => b.shelf === 'wantToRead')})
+        this.setState({
+            allBooks: books
+        })
       })
     };
 
-    // Get ReadList from BooksAPI
-    getReadList = () => {
-        BooksAPI.getAll().then((books) => {
-            this.setState({readList: books.filter((b) => b.shelf === 'read')})
-        })
-    };
-
     componentDidMount() {
-        this.getCurrentlyReadingList();
-        this.getWantToReadList();
-        this.getReadList();
+        this.getAllBooks();
     }
 
+    updateShelves = (e) => {
+        BooksAPI.getAll().then((books) => {
+            let updatedBooks = books
+            this.setState({allBooks: updatedBooks})
+        });
+        // this.setState({allBooks: updatedBooks})
+
+    };
+
     render() {
+        let currentlyReadingList = this.state.allBooks.filter((b) => b.shelf === 'currentlyReading');
+        let wantToReadList = this.state.allBooks.filter((b) => b.shelf === 'wantToRead');
+        let readList = this.state.allBooks.filter((b) => b.shelf === 'read');
+
         return (
             <div className="app">
                 <Route path='/search' render={() => (
@@ -64,15 +62,16 @@ class BooksApp extends Component {
                                     // shelfName is used for filtering of Books withing the BookShelf Component
                                     shelfName={'currentlyReading'}
                                     // bookList is the list of books on a given shelf from the app state
-                                    bookList={this.state.currentlyReadingList}
-                                    updateCurrenltyReading={this.getCurrentlyReadingList}
+                                    bookList={currentlyReadingList}
+                                    onShelfChange={(e) => this.updateShelves(e)}
                                 />
 
                                 {/*Want to Read Book Shelf*/}
                                 <BookShelf
                                     shelfLabel={'Want to Read'}
                                     shelfName={'wantToRead'}
-                                    bookList={this.state.wantToReadList}
+                                    bookList={wantToReadList}
+                                    onShelfChange={(e) => this.updateShelves(e)}
 
                                 />
 
@@ -80,7 +79,8 @@ class BooksApp extends Component {
                                 <BookShelf
                                     shelfLabel={'Read'}
                                     shelfName={'read'}
-                                    bookList={this.state.readList}
+                                    bookList={readList}
+                                    onShelfChange={(e) => this.updateShelves(e)}
                                 />
 
                             </div>
