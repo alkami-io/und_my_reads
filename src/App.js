@@ -65,6 +65,7 @@ class BooksApp extends Component {
                                     shelfName={'currentlyReading'}
                                     // bookList is the list of books on a given shelf from the app state
                                     bookList={this.state.currentlyReadingList}
+                                    updateCurrenltyReading={this.getCurrentlyReadingList}
                                 />
 
                                 {/*Want to Read Book Shelf*/}
@@ -72,6 +73,7 @@ class BooksApp extends Component {
                                     shelfLabel={'Want to Read'}
                                     shelfName={'wantToRead'}
                                     bookList={this.state.wantToReadList}
+
                                 />
 
                                 {/*Read Bookshelf*/}
