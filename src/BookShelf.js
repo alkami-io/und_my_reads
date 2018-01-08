@@ -3,7 +3,7 @@ import Book from './Book'
 
 class BookShelf extends Component {
     handleShelfChange = (e, book_id) => {
-        this.props.onShelfChange(e, book_id)
+        this.props.updateBook(e, book_id);
     };
 
     render() {
