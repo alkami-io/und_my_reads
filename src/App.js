@@ -60,8 +60,6 @@ class BooksApp extends Component {
     findBook = (e, book_id) => {
         let selectedShelf = e.target.value;
         BooksAPI.get(book_id).then(book => {
-            console.log(book)
-            console.log(selectedShelf)
             this.updateBook(book, selectedShelf)
         })
     }
@@ -69,7 +67,6 @@ class BooksApp extends Component {
     updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf).then(book => {
             book.shelf = shelf
-            console.log(book.shelf)
         })
     }
 
