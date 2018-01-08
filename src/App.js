@@ -12,30 +12,21 @@ class BooksApp extends Component {
     constructor() {
         super();
         this.state = {
-            allBooks: [],
             currentlyReadingList: [],
             wantToReadList: [],
             readList: [],
         }
     }
 
+    // Set States for three book lists once the app mounts
     componentDidMount() {
-        this.getAllBooks();
         this.getCurrentlyReadingBooks();
         this.getWantToReadBooks();
         this.getReadBooks();
     }
 
-    // Get Allbooks from BooksAPI
-    getAllBooks = () => {
-        BooksAPI.getAll().then((books) => {
-            this.setState({
-                allBooks: books,
-                allBooksCount: books.length
-            })
-        })
-    };
 
+    // API Call for getting and setting state for currentlyReading List
     getCurrentlyReadingBooks = () => {
       BooksAPI.getAll().then((books) => {
           this.setState({
@@ -44,6 +35,7 @@ class BooksApp extends Component {
       })
     };
 
+    // API Call for getting and setting state for wantToRead List
     getWantToReadBooks = () => {
         BooksAPI.getAll().then((books) => {
             this.setState({
@@ -52,6 +44,7 @@ class BooksApp extends Component {
         })
     };
 
+    // API Call for getting and setting state for Read List
     getReadBooks = () => {
         BooksAPI.getAll().then((books) => {
             this.setState({
@@ -60,6 +53,7 @@ class BooksApp extends Component {
         })
     };
 
+    // API Call for finding a book and updating it.
     findBook = (e, book_id) => {
         let selectedShelf = e.target.value;
         BooksAPI.get(book_id).then(book => {
@@ -67,12 +61,14 @@ class BooksApp extends Component {
         })
     };
 
+    // API Call for updating a book's shelf. this is chained in find book to Find and update a book
     updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf).then(book => {
             book.shelf = shelf
         });
     };
 
+    // Reset States when Books are updated
     componentDidUpdate() {
         this.getCurrentlyReadingBooks();
         this.getWantToReadBooks();
