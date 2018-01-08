@@ -13,9 +13,13 @@ class BooksApp extends Component {
         super();
         this.state = {
             allBooks: [],
+            allBooksCount: 0,
             currentlyReadingList: [],
+            currentlyReadingCount: 0,
             wantToReadList: [],
-            readList: []
+            wantToReadCount: 0,
+            readList: [],
+            readCount: 0
         }
     }
 
@@ -27,10 +31,10 @@ class BooksApp extends Component {
 
     // Get Allbooks from BooksAPI
     getAllBooks = () => {
-        console.log('Getting all books.');
         BooksAPI.getAll().then((books) => {
             this.setState({
                 allBooks: books,
+                allBooksCount: books.length
             })
         })
     };
@@ -38,7 +42,8 @@ class BooksApp extends Component {
     getCurrentlyReadingBooks = () => {
       BooksAPI.getAll().then((books) => {
           this.setState({
-              currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading')
+              currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading'),
+              currentlyReadingCount: books.filter((b) => b.shelf === 'currentlyReading').length
           })
       })
     };
@@ -52,9 +57,10 @@ class BooksApp extends Component {
     };
 
     updateShelves = (e, book_id) => {
-        console.log('Event: ' + e.target.value);
-        console.log('Book: ' + book_id);
-        this.findBook(e, book_id)
+        this.setState = {
+            currentlyReadingCount: this.state.currentlyReadingCount + 1
+        }
+
     };
 
     findBook = (e, book_id) => {
@@ -67,7 +73,9 @@ class BooksApp extends Component {
     updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf).then(book => {
             book.shelf = shelf
-        })
+        });
+
+        this.updateShelves()
     }
 
     render() {
@@ -94,7 +102,7 @@ class BooksApp extends Component {
                                     shelfName={'currentlyReading'}
                                     // bookList is the list of books on a given shelf from the app state
                                     bookList={this.state.currentlyReadingList}
-                                    onShelfChange={(e, book_id) => this.updateShelves(e, book_id)}
+                                    onShelfChange={(e, book_id) => this.findBook(e, book_id)}
                                 />
 
                                 {/*Want to Read Book Shelf*/}
@@ -102,7 +110,7 @@ class BooksApp extends Component {
                                     shelfLabel={'Want to Read'}
                                     shelfName={'wantToRead'}
                                     bookList={this.state.wantToReadList}
-                                    onShelfChange={(e, book_id) => this.updateShelves(e, book_id)}
+                                    onShelfChange={(e, book_id) => this.findBook(e, book_id)}
 
                                 />
 
@@ -111,7 +119,7 @@ class BooksApp extends Component {
                                     shelfLabel={'Read'}
                                     shelfName={'read'}
                                     bookList={this.state.readList}
-                                    onShelfChange={(e, book_id) => this.updateShelves(e, book_id)}
+                                    onShelfChange={(e, book_id) => this.findBook(e, book_id)}
                                 />
 
                             </div>
