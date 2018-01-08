@@ -9,37 +9,71 @@ import BookShelf from "./BookShelf"
 import SearchBooks from "./SearchBooks"
 
 class BooksApp extends Component {
-    state = {
-        allBooks: []
-    };
-
-    // Get Allbooks from BooksAPI
-    getAllBooks = () => {
-        console.log('Getting all books.')
-      BooksAPI.getAll().then((books) => {
-        this.setState({
-            allBooks: books
-        })
-      })
-    };
+    constructor() {
+        super();
+        this.state = {
+            allBooks: [],
+            currentlyReadingList: [],
+            wantToReadList: [],
+            readList: []
+        }
+    }
 
     componentDidMount() {
         this.getAllBooks();
+        this.getCurrentlyReadingBooks();
+        this.getWantToReadBooks();
     }
 
-    updateShelves = (e) => {
+    // Get Allbooks from BooksAPI
+    getAllBooks = () => {
+        console.log('Getting all books.');
         BooksAPI.getAll().then((books) => {
-            let updatedBooks = books
-            this.setState({allBooks: updatedBooks})
-        });
-        // this.setState({allBooks: updatedBooks})
-
+            this.setState({
+                allBooks: books,
+            })
+        })
     };
 
+    getCurrentlyReadingBooks = () => {
+      BooksAPI.getAll().then((books) => {
+          this.setState({
+              currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading')
+          })
+      })
+    };
+
+    getWantToReadBooks = () => {
+        BooksAPI.getAll().then((books) => {
+            this.setState({
+                wantToReadList: books.filter((b) => b.shelf === 'wantToRead')
+            })
+        })
+    };
+
+    updateShelves = (e, book_id) => {
+        console.log('Event: ' + e.target.value);
+        console.log('Book: ' + book_id);
+        this.findBook(e, book_id)
+    };
+
+    findBook = (e, book_id) => {
+        let selectedShelf = e.target.value;
+        BooksAPI.get(book_id).then(book => {
+            console.log(book)
+            console.log(selectedShelf)
+            this.updateBook(book, selectedShelf)
+        })
+    }
+
+    updateBook = (book, shelf) => {
+        BooksAPI.update(book, shelf).then(book => {
+            book.shelf = shelf
+            console.log(book.shelf)
+        })
+    }
+
     render() {
-        let currentlyReadingList = this.state.allBooks.filter((b) => b.shelf === 'currentlyReading');
-        let wantToReadList = this.state.allBooks.filter((b) => b.shelf === 'wantToRead');
-        let readList = this.state.allBooks.filter((b) => b.shelf === 'read');
 
         return (
             <div className="app">
@@ -62,16 +96,16 @@ class BooksApp extends Component {
                                     // shelfName is used for filtering of Books withing the BookShelf Component
                                     shelfName={'currentlyReading'}
                                     // bookList is the list of books on a given shelf from the app state
-                                    bookList={currentlyReadingList}
-                                    onShelfChange={(e) => this.updateShelves(e)}
+                                    bookList={this.state.currentlyReadingList}
+                                    onShelfChange={(e, book_id) => this.updateShelves(e, book_id)}
                                 />
 
                                 {/*Want to Read Book Shelf*/}
                                 <BookShelf
                                     shelfLabel={'Want to Read'}
                                     shelfName={'wantToRead'}
-                                    bookList={wantToReadList}
-                                    onShelfChange={(e) => this.updateShelves(e)}
+                                    bookList={this.state.wantToReadList}
+                                    onShelfChange={(e, book_id) => this.updateShelves(e, book_id)}
 
                                 />
 
@@ -79,8 +113,8 @@ class BooksApp extends Component {
                                 <BookShelf
                                     shelfLabel={'Read'}
                                     shelfName={'read'}
-                                    bookList={readList}
-                                    onShelfChange={(e) => this.updateShelves(e)}
+                                    bookList={this.state.readList}
+                                    onShelfChange={(e, book_id) => this.updateShelves(e, book_id)}
                                 />
 
                             </div>
