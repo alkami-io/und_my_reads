@@ -20,34 +20,15 @@ class BooksApp extends Component {
 
     // Set States for three book lists once the app mounts
     componentDidMount() {
-        this.getCurrentlyReadingBooks();
-        this.getWantToReadBooks();
-        this.getReadBooks();
+       this.getAllBooks()
     }
 
-
-    // API Call for getting and setting state for currentlyReading List
-    getCurrentlyReadingBooks = () => {
-      BooksAPI.getAll().then((books) => {
-          this.setState({
-              currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading'),
-          })
-      })
-    };
-
-    // API Call for getting and setting state for wantToRead List
-    getWantToReadBooks = () => {
-        BooksAPI.getAll().then((books) => {
-            this.setState({
-                wantToReadList: books.filter((b) => b.shelf === 'wantToRead')
-            })
-        })
-    };
-
-    // API Call for getting and setting state for Read List
-    getReadBooks = () => {
-        BooksAPI.getAll().then((books) => {
-            this.setState({
+    getAllBooks = () => {
+        let self = this;
+        BooksAPI.getAll().then(function(books) {
+            self.setState({
+                currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading'),
+                wantToReadList: books.filter((b) => b.shelf === 'wantToRead'),
                 readList: books.filter((b) => b.shelf === 'read')
             })
         })
@@ -70,9 +51,7 @@ class BooksApp extends Component {
 
     // Reset States when Books are updated
     componentDidUpdate() {
-        this.getCurrentlyReadingBooks();
-        this.getWantToReadBooks();
-        this.getReadBooks();
+        this.getAllBooks()
     }
 
     render() {
