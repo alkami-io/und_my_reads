@@ -17,9 +17,11 @@ class BooksApp extends Component {
             readList: [],
         };
 
+        // Set Initial states on construction with the getAllBooks() function
         this.getAllBooks()
     }
 
+    // Get All books and sort by state based on shelf assignment
     getAllBooks = () => {
         let self = this;
         BooksAPI.getAll().then(function(books) {
