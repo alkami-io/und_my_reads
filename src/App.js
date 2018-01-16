@@ -15,12 +15,9 @@ class BooksApp extends Component {
             currentlyReadingList: [],
             wantToReadList: [],
             readList: [],
-        }
-    }
+        };
 
-    // Set States for three book lists once the app mounts
-    componentDidMount() {
-       this.getAllBooks()
+        this.getAllBooks()
     }
 
     getAllBooks = () => {
@@ -38,21 +35,18 @@ class BooksApp extends Component {
     findBook = (e, book_id) => {
         let selectedShelf = e.target.value;
         BooksAPI.get(book_id).then(book => {
-            this.updateBook(book, selectedShelf)
+            this.updateBook(book, selectedShelf);
         })
+
     };
 
     // API Call for updating a book's shelf. this is chained in find book to Find and update a book
     updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf).then(book => {
             book.shelf = shelf
+            this.getAllBooks();
         });
     };
-
-    // Reset States when Books are updated
-    componentDidUpdate() {
-        this.getAllBooks()
-    }
 
     render() {
 
