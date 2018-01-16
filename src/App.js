@@ -9,37 +9,46 @@ import BookShelf from "./BookShelf"
 import SearchBooks from "./SearchBooks"
 
 class BooksApp extends Component {
-    state = {
-        allBooks: []
-    };
+    constructor() {
+        super();
+        this.state = {
+            currentlyReadingList: [],
+            wantToReadList: [],
+            readList: [],
+        };
 
-    // Get Allbooks from BooksAPI
-    getAllBooks = () => {
-        console.log('Getting all books.')
-      BooksAPI.getAll().then((books) => {
-        this.setState({
-            allBooks: books
-        })
-      })
-    };
-
-    componentDidMount() {
-        this.getAllBooks();
+        this.getAllBooks()
     }
 
-    updateShelves = (e) => {
-        BooksAPI.getAll().then((books) => {
-            let updatedBooks = books
-            this.setState({allBooks: updatedBooks})
-        });
-        // this.setState({allBooks: updatedBooks})
+    getAllBooks = () => {
+        let self = this;
+        BooksAPI.getAll().then(function(books) {
+            self.setState({
+                currentlyReadingList: books.filter((b) => b.shelf === 'currentlyReading'),
+                wantToReadList: books.filter((b) => b.shelf === 'wantToRead'),
+                readList: books.filter((b) => b.shelf === 'read')
+            })
+        })
+    };
 
+    // API Call for finding a book and updating it.
+    findBook = (e, book_id) => {
+        let selectedShelf = e.target.value;
+        BooksAPI.get(book_id).then(book => {
+            this.updateBook(book, selectedShelf);
+        })
+
+    };
+
+    // API Call for updating a book's shelf. this is chained in find book to Find and update a book
+    updateBook = (book, shelf) => {
+        BooksAPI.update(book, shelf).then(book => {
+            book.shelf = shelf
+            this.getAllBooks();
+        });
     };
 
     render() {
-        let currentlyReadingList = this.state.allBooks.filter((b) => b.shelf === 'currentlyReading');
-        let wantToReadList = this.state.allBooks.filter((b) => b.shelf === 'wantToRead');
-        let readList = this.state.allBooks.filter((b) => b.shelf === 'read');
 
         return (
             <div className="app">
@@ -62,16 +71,16 @@ class BooksApp extends Component {
                                     // shelfName is used for filtering of Books withing the BookShelf Component
                                     shelfName={'currentlyReading'}
                                     // bookList is the list of books on a given shelf from the app state
-                                    bookList={currentlyReadingList}
-                                    onShelfChange={(e) => this.updateShelves(e)}
+                                    bookList={this.state.currentlyReadingList}
+                                    updateBook={(e, book_id) => this.findBook(e, book_id)}
                                 />
 
                                 {/*Want to Read Book Shelf*/}
                                 <BookShelf
                                     shelfLabel={'Want to Read'}
                                     shelfName={'wantToRead'}
-                                    bookList={wantToReadList}
-                                    onShelfChange={(e) => this.updateShelves(e)}
+                                    bookList={this.state.wantToReadList}
+                                    updateBook={(e, book_id) => this.findBook(e, book_id)}
 
                                 />
 
@@ -79,8 +88,8 @@ class BooksApp extends Component {
                                 <BookShelf
                                     shelfLabel={'Read'}
                                     shelfName={'read'}
-                                    bookList={readList}
-                                    onShelfChange={(e) => this.updateShelves(e)}
+                                    bookList={this.state.readList}
+                                    updateBook={(e, book_id) => this.findBook(e, book_id)}
                                 />
 
                             </div>

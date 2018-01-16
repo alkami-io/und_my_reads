@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import Book from './Book'
 
 class BookShelf extends Component {
-    handleShelfChange = (e) => {
-        console.log('HandleShelfChange Fired!')
-        this.props.onShelfChange(e)
-    }
+    handleShelfChange = (e, book_id) => {
+        this.props.updateBook(e, book_id);
+    };
 
     render() {
         return (
@@ -24,7 +23,7 @@ class BookShelf extends Component {
                                         authors={book.authors}
                                         image={book.imagesLinks}
                                         shelf={book.shelf}
-                                        changeShelf={(e) => this.handleShelfChange(e)}
+                                        changeShelf={(e, book_id) => this.handleShelfChange(e, book_id)}
                                     />
                                 </li>
                             )}
